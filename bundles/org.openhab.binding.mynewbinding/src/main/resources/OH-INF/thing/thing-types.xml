@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="mynewbinding"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- Sample Thing Type -->
+	<thing-type id="BarCodeReader">
+		<!-- Comment this in for Things which need a Bridge to function.
+			<supported-bridge-type-refs>
+			<bridge-type-ref id="MyNewBindingBridge" />
+			</supported-bridge-type-refs>
+		-->
+
+		<label>BarCodeReader Thing</label>
+		<description>Thing for MyNewBinding BarCodeReader</description>
+
+		<channels>
+			<channel id="DeviceInfo" typeId="deviceInfo"/>
+			<channel id="Manufacturer" typeId="manufacturer"/>
+			<channel id="Model" typeId="model"/>
+			<channel id="DeviceLocation" typeId="deviceLocation"/>
+			<channel id="DeviceStatus" typeId="deviceStatus"/>
+			<channel id="AutoIdModelVersion" typeId="autoIdModelVersion"/>
+			<channel id="DeviceManual" typeId="deviceManual"/>
+			<channel id="LastScanData" typeId="lastScanData"/>
+			<channel id="OpticalVerifierScanResult" typeId="opticalVerifierScanResult"/>
+			<channel id="DeviceRevision" typeId="deviceRevision"/>
+		</channels>
+
+		<config-description>
+			<parameter name="hostname" type="text" required="true">
+				<context>network-address</context>
+				<label>Hostname</label>
+				<description>Hostname or IP address of the device</description>
+			</parameter>
+			<parameter name="password" type="text" required="true">
+				<context>password</context>
+				<label>Password</label>
+				<description>Password to access the device</description>
+			</parameter>
+			<parameter name="refreshInterval" type="integer" unit="s" min="1">
+				<label>Refresh Interval</label>
+				<description>Interval the device is polled in sec.</description>
+				<default>600</default>
+				<advanced>true</advanced>
+			</parameter>
+		</config-description>
+	</thing-type>
+
+	<!-- Sample Channel Type -->
+	<channel-type id="deviceInfo">
+		<item-type>String</item-type>
+		<label>Device Information</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives the device Information</description>
+	</channel-type>
+	<channel-type id="manufacturer">
+		<item-type>String</item-type>
+		<label>Manufacturer</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives the manufacturer Name</description>
+	</channel-type>
+	<channel-type id="model">
+		<item-type>String</item-type>
+		<label>model Name</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives model Name</description>
+	</channel-type>
+	<channel-type id="deviceLocation">
+		<item-type>String</item-type>
+		<label>Location</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives the current location</description>
+	</channel-type>
+	<channel-type id="deviceStatus">
+		<item-type>String</item-type>
+		<label>State of the Device</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives state of the Device</description>
+	</channel-type>
+	<channel-type id="autoIdModelVersion">
+		<item-type>String</item-type>
+		<label>Model Version</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives the model Version</description>
+	</channel-type>
+	<channel-type id="deviceManual">
+		<item-type>String</item-type>
+		<label>Device Manual</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives Info - How to use the Device</description>
+	</channel-type>
+	<channel-type id="lastScanData">
+		<item-type>Number</item-type>
+		<label>Last Scanned Data</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives the Last scanned Data</description>
+	</channel-type>
+	<channel-type id="opticalVerifierScanResult">
+		<item-type>String</item-type>
+		<label>Scan Result</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives the scan Verifier Result</description>
+	</channel-type>
+	<channel-type id="deviceRevision">
+		<item-type>String</item-type>
+		<label>Revision</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Device Revision</description>
+	</channel-type>
+</thing:thing-descriptions>
