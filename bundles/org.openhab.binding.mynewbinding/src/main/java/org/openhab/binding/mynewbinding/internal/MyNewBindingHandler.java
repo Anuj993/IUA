@@ -55,8 +55,7 @@ public class MyNewBindingHandler extends BaseThingHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
 
-
-        //Gives static Device Information
+        // Gives static Device Information
         if (DEVICEINFO_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
@@ -65,7 +64,7 @@ public class MyNewBindingHandler extends BaseThingHandler {
             }
         }
 
-        //Gives static Manufacturer name
+        // Gives static Manufacturer name
         if (MANUFACTURER_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
@@ -94,7 +93,6 @@ public class MyNewBindingHandler extends BaseThingHandler {
 
         }
 
-
         if (AUTOIDMODELVERSION_ID.equals(channelUID.getId())) {
 
             if (command instanceof RefreshType) {
@@ -120,7 +118,7 @@ public class MyNewBindingHandler extends BaseThingHandler {
 
         }
 
-        //this gives new Barcode
+        // this gives new Barcode
         if (OPTICALVERIFIERSCANRESULT_ID.equals(channelUID.getId())) {
 
             if (command instanceof RefreshType) {
@@ -158,16 +156,16 @@ public class MyNewBindingHandler extends BaseThingHandler {
                 updateStatus(ThingStatus.OFFLINE);
             }
         });
-
     }
 
     private String getDeviceInfo() {
 
-        //Gives the Device Information
+        // Gives the Device Information
         return "Hyper Scanner 101";
     }
+
     private String getManufacturerName() {
-         //Gives the manufacture name
+        // Gives the manufacture name
         return "THM Industrie GmbH";
     }
 
