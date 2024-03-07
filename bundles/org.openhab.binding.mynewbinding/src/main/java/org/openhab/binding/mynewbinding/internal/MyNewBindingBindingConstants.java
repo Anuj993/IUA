@@ -44,7 +44,7 @@ public class MyNewBindingBindingConstants {
 
     public static final String DEVICEMANUAL_ID = "DeviceManual";
 
-    public static final String LASTSCANDATA_ID = "LastScanData";
+    public static final String ActualTime = "LastScanData";
 
     public static final String OPTICALVERIFIERSCANRESULT_ID = "OpticalVerifierScanResult";
 

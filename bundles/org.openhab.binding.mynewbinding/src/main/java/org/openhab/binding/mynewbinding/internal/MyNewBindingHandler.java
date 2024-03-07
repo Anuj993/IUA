@@ -14,9 +14,15 @@ package org.openhab.binding.mynewbinding.internal;
 
 import static org.openhab.binding.mynewbinding.internal.MyNewBindingBindingConstants.*;
 
+import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
@@ -40,6 +46,8 @@ public class MyNewBindingHandler extends BaseThingHandler {
 
     private @Nullable MyNewBindingConfiguration config;
 
+    private @Nullable ScheduledFuture<?> scheduledFuture = null;
+
     public MyNewBindingHandler(Thing thing) {
         super(thing);
     }
@@ -47,123 +55,93 @@ public class MyNewBindingHandler extends BaseThingHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
 
-        logger.debug("handleCommand received for channelUID '{}', command '{}'", channelUID, command);
 
-        // this is for on/off of the barcode reader
+        //Gives static Device Information
         if (DEVICEINFO_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
-                logger.debug("Handling refresh command for channel '{}'", channelUID);
-
-                // TODO: handle data refresh
-                boolean isCurrentlyOn = false;
-                updateState(DEVICEINFO_ID, !isCurrentlyOn ? OnOffType.OFF : OnOffType.ON);
-
-            } else if (command instanceof OnOffType) {
-                // Log OnOff command handling
-                logger.info("Handling OnOff command '{}' for channel '{}'", command, channelUID);
-
-                // TODO: handle command
-
-                // Handle OnOff command
-                if (command == OnOffType.ON) {
-
-                    // Log sending on command to the device
-                    logger.debug("Sending ON command to the device");
-
-                    // Send on command to device, but how?
-                } else if (command == OnOffType.OFF) {
-                    // Log sending off command to the device
-                    logger.debug("Sending OFF command to the device");
-
-                    // send off command to device
-                }
-
-                // Log updating the state of the channel
-                logger.debug("Updating state of channel '{}' to '{}'", channelUID, command);
-                updateState(DEVICEINFO_ID, (OnOffType) command);
-            } else {
-                // Log if command is received for an unknown channel
-                logger.warn("Command received for unknown channel: '{}'", channelUID);
+                String DeviceInfo = getDeviceInfo();
+                updateState(channelUID, new StringType(DeviceInfo));
             }
-
-            // Note: if communication with thing fails for some reason,
-            // indicate that by setting the status with detail information:
-            // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-            // "Could not control device at IP address x.x.x.x");
         }
+
+        //Gives static Manufacturer name
         if (MANUFACTURER_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
+                String manufacturerName = getManufacturerName();
+                updateState(channelUID, new StringType(manufacturerName));
             }
-            // TODO: handle command
         }
+
         if (MODEL_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
             }
-            // TODO: handle command
+
         }
         if (DEVICELOCATION_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
             }
-            // TODO: handle command
+
         }
+
         if (DEVICESTATUS_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
             }
-            // TODO: handle command
+
         }
+
+
         if (AUTOIDMODELVERSION_ID.equals(channelUID.getId())) {
+
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
             }
-            // TODO: handle command
+
         }
+
         if (DEVICEMANUAL_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
             }
-            // TODO: handle command
+
         }
-        if (LASTSCANDATA_ID.equals(channelUID.getId())) {
+        if (ActualTime.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
+                // Simulate data retrieval
+                String simulatedData = getSimulatedScanData();
+                // Update the channel with the simulated data
+                updateState(channelUID, new StringType(simulatedData));
             }
-            // TODO: handle command
+
         }
+
+        //this gives new Barcode
         if (OPTICALVERIFIERSCANRESULT_ID.equals(channelUID.getId())) {
+
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
+                updateRandomNumber();
             }
-            // TODO: handle command
+
         }
         if (DEVICEREVISION_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-                // TODO: handle data refresh
+
             }
-            // TODO: handle command
+
         }
     }
 
     @Override
     public void initialize() {
+
         config = getConfigAs(MyNewBindingConfiguration.class);
 
-        // TODO: Initialize the handler.
-        // The framework requires you to return from this method quickly, i.e. any network access must be done in
-        // the background initialization below.
-        // Also, before leaving this method a thing status from one of ONLINE, OFFLINE or UNKNOWN must be set. This
-        // might already be the real thing status in case you can decide it directly.
-        // In case you can not decide the thing status directly (e.g. for long running connection handshake using WAN
-        // access or similar) you should set status UNKNOWN here and then decide the real status asynchronously in the
-        // background.
-
-        // set the thing status to UNKNOWN temporarily and let the background task decide for the real status.
-        // the framework is then able to reuse the resources from the thing handler initialization.
-        // we set this upfront to reliably check status updates in unit tests.
         updateStatus(ThingStatus.UNKNOWN);
 
         // Example for background initialization:
@@ -171,24 +149,48 @@ public class MyNewBindingHandler extends BaseThingHandler {
             boolean thingReachable = true; // <background task with long running initialization here>
             // when done do:
             if (thingReachable) {
+
                 updateStatus(ThingStatus.ONLINE);
+
+                // Schedule the task to update random number after confirming thing is reachable/ONLINE
+                scheduledFuture = scheduler.scheduleAtFixedRate(this::updateRandomNumber, 0, 3, TimeUnit.SECONDS);
             } else {
                 updateStatus(ThingStatus.OFFLINE);
             }
         });
 
-        // These logging types should be primarily used by bindings
-        // logger.trace("Example trace message");
-        // logger.debug("Example debug message");
-        // logger.warn("Example warn message");
-        //
-        // Logging to INFO should be avoided normally.
-        // See https://www.openhab.org/docs/developer/guidelines.html#f-logging
+    }
 
-        // Note: When initialization can NOT be done set the status with more details for further
-        // analysis. See also class ThingStatusDetail for all available status details.
-        // Add a description to give user information to understand why thing does not work as expected. E.g.
-        // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-        // "Can not access device as username and/or password are invalid");
+    private String getDeviceInfo() {
+
+        //Gives the Device Information
+        return "Hyper Scanner 101";
+    }
+    private String getManufacturerName() {
+         //Gives the manufacture name
+        return "THM Industrie GmbH";
+    }
+
+    private String getSimulatedScanData() {
+        // Generate simulated data
+        // This is a placeholder, and you'd replace this with your simulation logic
+        return "Simulated scan data at " + new Date().toString();
+    }
+
+    private void updateRandomNumber() {
+        // Generate a random number between 100,000 and 10,000,000
+        int randomNumber = new Random().nextInt((10000000 - 100000) + 1) + 100000;
+
+        // Update the channel state with the new random number
+        updateState(new ChannelUID(getThing().getUID(), OPTICALVERIFIERSCANRESULT_ID), new DecimalType(randomNumber));
+    }
+
+    @Override
+    public void dispose() {
+        // Ensure we cancel the scheduled task when the handler is disposed
+        if (scheduledFuture != null && !scheduledFuture.isCancelled()) {
+            scheduledFuture.cancel(true);
+        }
+        super.dispose();
     }
 }

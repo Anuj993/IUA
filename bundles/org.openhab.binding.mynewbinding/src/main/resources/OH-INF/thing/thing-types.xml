@@ -58,6 +58,7 @@
 		<item-type>String</item-type>
 		<label>Manufacturer</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives the manufacturer Name</description>
+		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="model">
 		<item-type>String</item-type>
@@ -85,12 +86,13 @@
 		<description>Gives Info - How to use the Device</description>
 	</channel-type>
 	<channel-type id="lastScanData">
-		<item-type>Number</item-type>
+		<item-type>String</item-type>
 		<label>Last Scanned Data</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives the Last scanned Data</description>
+		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="opticalVerifierScanResult">
-		<item-type>String</item-type>
+		<item-type>Number</item-type>
 		<label>Scan Result</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives the scan Verifier Result</description>
 	</channel-type>
