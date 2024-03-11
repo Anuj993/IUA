@@ -26,6 +26,7 @@ import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusInfo;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
@@ -77,35 +78,38 @@ public class MyNewBindingHandler extends BaseThingHandler {
             if (command instanceof RefreshType) {
 
             }
-
+            String modelId = getModelId();
+            updateState(channelUID, new StringType(modelId));
         }
         if (DEVICELOCATION_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
             }
+            String deviceLocation = getDeviceLocation();
+            updateState(channelUID, new StringType(deviceLocation));
 
         }
 
         if (DEVICESTATUS_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-
             }
+            String deviceStatus = getDeviceStatus();
+            updateState(channelUID, new StringType(deviceStatus));
 
         }
 
         if (AUTOIDMODELVERSION_ID.equals(channelUID.getId())) {
-
             if (command instanceof RefreshType) {
-
             }
-
+            String autoIdModelVersion = getAutoIdModelVersion();
+            updateState(channelUID, new StringType(autoIdModelVersion));
         }
 
         if (DEVICEMANUAL_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
-
             }
-
+            String deviceManual = getDeviceManual();
+            updateState(channelUID, new StringType(deviceManual));
         }
         if (ActualTime.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
@@ -131,7 +135,8 @@ public class MyNewBindingHandler extends BaseThingHandler {
             if (command instanceof RefreshType) {
 
             }
-
+            String deviceRevision = getDeviceRevision();
+            updateState(channelUID, new StringType(deviceRevision));
         }
     }
 
@@ -181,6 +186,87 @@ public class MyNewBindingHandler extends BaseThingHandler {
 
         // Update the channel state with the new random number
         updateState(new ChannelUID(getThing().getUID(), OPTICALVERIFIERSCANRESULT_ID), new DecimalType(randomNumber));
+    }
+
+    /**
+     * Retrieves the model ID of the device.
+     *
+     * @return The model ID of the device.
+     */
+    private String getModelId() {
+        return "248IC";
+    }
+
+    /**
+     * Retrieves the device location.
+     *
+     * @return The device location.
+     */
+    private String getDeviceLocation() {
+        return "somewhere in the thm";
+    }
+
+    /**
+     * Retrieves the device status as a string.
+     * could be ONLINE, OFFLINE, UNKNOWN, UNINITIALIZED, INITIALIZING, REMOVING, REMOVED, or DISPOSED.
+     *
+     * @return The device status.
+     */
+    private String getDeviceStatus() {
+        ThingStatusInfo statusInfo = thing.getStatusInfo();
+        return statusInfo.getStatus().toString();
+    }
+
+    /**
+     * Retrieves the auto ID model version by combining device information and device version number.
+     * this is a simulation of what the real results might look like.
+     * the real Value should be retrieved from the OPC UA server.
+     *
+     * @return The auto ID model version.
+     */
+    private String getAutoIdModelVersion() {
+        return getDeviceInfo() + getDeviceVersionNumber();
+    }
+
+    /**
+     * Returns the device manual instructions for using the scanner.
+     * the manual should be retrieved from the scanner in a real implementation.
+     * 
+     * @return The instructions for using the scanner.
+     */
+    private String getDeviceManual() {
+        String instructions = "";
+        instructions = "Press the power button to turn on the scanner.\n "
+                + "Place the document to be scanned on the glass.\n " + "Press the scan button to start scanning. \n "
+                + "Press the color option if you want a color scan.\n "
+                + "Press the black and white option if you want a B/W scan.\n";
+        return instructions;
+    }
+
+    /**
+     * Returns the optical verifier scan result.
+     * The optical verifier scan result should be retrieved from the device in a real implementation.
+     *
+     * @return The optical verifier scan result.
+     */
+    private int getOpticalVerifierScanResult() {
+        Random random = new Random();
+        return random.nextInt(100000, 1000000);
+    }
+
+    /**
+     * Returns the device revision.
+     * The device revision should be retrieved from the device in a real implementation.
+     * In this case, it's the combination of the model id and the version number of the device.
+     *
+     * @return The device revision.
+     */
+    private String getDeviceRevision() {
+        return getModelId() + getDeviceVersionNumber();
+    }
+
+    private String getDeviceVersionNumber() {
+        return "248IC";
     }
 
     @Override

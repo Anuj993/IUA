@@ -72,8 +72,9 @@
 	</channel-type>
 	<channel-type id="deviceStatus">
 		<item-type>String</item-type>
-		<label>State of the Device</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<label>State</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives state of the Device</description>
+		<state readOnly="true"></state>
 	</channel-type>
 	<channel-type id="autoIdModelVersion">
 		<item-type>String</item-type>
