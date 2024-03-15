@@ -14,7 +14,6 @@ package org.openhab.binding.mynewbinding.internal;
 
 import static org.openhab.binding.mynewbinding.internal.MyNewBindingBindingConstants.*;
 
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -47,16 +46,30 @@ public class MyNewBindingHandler extends BaseThingHandler {
 
     private @Nullable MyNewBindingConfiguration config;
 
+    /**
+     * schedule tasks to run after a specified delay or to execute repeatedly at fixed intervals
+     */
     private @Nullable ScheduledFuture<?> scheduledFuture = null;
 
     public MyNewBindingHandler(Thing thing) {
         super(thing);
     }
 
+    /**
+     * Handles commands for updating various device information states based on the provided channel ID and command.
+     * Updates static device information such as device info, manufacturer name, model ID, device location, device
+     * status,
+     * model and version ID, device manual for new users, country of origin, device revision ID, and generates a random
+     * new
+     * barcode.
+     *
+     * @param channelUID The unique identifier for the channel.
+     * @param command The command to be handled.
+     */
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
 
-        // Gives static Device Information
+        // static Device Information
         if (DEVICEINFO_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
@@ -65,7 +78,7 @@ public class MyNewBindingHandler extends BaseThingHandler {
             }
         }
 
-        // Gives static Manufacturer name
+        // static Manufacturer name
         if (MANUFACTURER_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
@@ -74,72 +87,92 @@ public class MyNewBindingHandler extends BaseThingHandler {
             }
         }
 
+        // static model Id Name
         if (MODEL_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
+                String modelId = getModelId();
+                updateState(channelUID, new StringType(modelId));
             }
-            String modelId = getModelId();
-            updateState(channelUID, new StringType(modelId));
         }
+
+        // location of device
         if (DEVICELOCATION_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
+                String deviceLocation = getDeviceLocation();
+                updateState(channelUID, new StringType(deviceLocation));
+
             }
-            String deviceLocation = getDeviceLocation();
-            updateState(channelUID, new StringType(deviceLocation));
 
         }
-
+        // device Status
         if (DEVICESTATUS_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
+
+                String deviceStatus = getDeviceStatus();
+                updateState(channelUID, new StringType(deviceStatus));
+
             }
-            String deviceStatus = getDeviceStatus();
-            updateState(channelUID, new StringType(deviceStatus));
 
         }
 
+        // model and version Id
         if (AUTOIDMODELVERSION_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
+
+                String autoIdModelVersion = getAutoIdModelVersion();
+                updateState(channelUID, new StringType(autoIdModelVersion));
             }
-            String autoIdModelVersion = getAutoIdModelVersion();
-            updateState(channelUID, new StringType(autoIdModelVersion));
         }
 
+        // device manual for new Users
         if (DEVICEMANUAL_ID.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
+
+                String deviceManual = getDeviceManual();
+                updateState(channelUID, new StringType(deviceManual));
+
             }
-            String deviceManual = getDeviceManual();
-            updateState(channelUID, new StringType(deviceManual));
+
         }
-        if (ActualTime.equals(channelUID.getId())) {
+
+        // origin of product
+        if (COUNTRY_ORIGIN.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
 
-                // Simulate data retrieval
-                String simulatedData = getSimulatedScanData();
-                // Update the channel with the simulated data
-                updateState(channelUID, new StringType(simulatedData));
+                String country = countryOrigin();
+                updateState(channelUID, new StringType(country));
             }
 
         }
-
-        // this gives new Barcode
+        // Random new Barcode
         if (OPTICALVERIFIERSCANRESULT_ID.equals(channelUID.getId())) {
 
             if (command instanceof RefreshType) {
 
-                updateRandomNumber();
+                updateRandom_BarCode();
             }
 
         }
+        // device revision Id
         if (DEVICEREVISION_ID.equals(channelUID.getId())) {
+
             if (command instanceof RefreshType) {
 
+                String deviceRevision = getDeviceRevision();
+                updateState(channelUID, new StringType(deviceRevision));
+
             }
-            String deviceRevision = getDeviceRevision();
-            updateState(channelUID, new StringType(deviceRevision));
         }
     }
 
+    /**
+     * Initializes the binding by retrieving configuration settings, setting the initial Thing status to UNKNOWN,
+     * and executing background initialization tasks. Once initialization is complete and the Thing is confirmed
+     * as reachable, the Thing status is updated to ONLINE, and a task is scheduled to update a random barcode at
+     * regular intervals.
+     */
     @Override
     public void initialize() {
 
@@ -156,31 +189,59 @@ public class MyNewBindingHandler extends BaseThingHandler {
                 updateStatus(ThingStatus.ONLINE);
 
                 // Schedule the task to update random number after confirming thing is reachable/ONLINE
-                scheduledFuture = scheduler.scheduleAtFixedRate(this::updateRandomNumber, 0, 3, TimeUnit.SECONDS);
+                scheduledFuture = scheduler.scheduleAtFixedRate(this::updateRandom_BarCode, 0, 3, TimeUnit.SECONDS);
             } else {
                 updateStatus(ThingStatus.OFFLINE);
             }
         });
     }
 
+    /**
+     * Retrieves the device information for the current device.
+     * 
+     * @return A String that represents the device information,
+     *         for our case Device Info is "Hyper Scanner 101".
+     */
     private String getDeviceInfo() {
 
         // Gives the Device Information
         return "Hyper Scanner 101";
     }
 
+    /**
+     * Retrieves the name of the device manufacturer.
+     *
+     * @return A String representing the name of the device manufacturer
+     *
+     */
     private String getManufacturerName() {
         // Gives the manufacture name
         return "THM Industrie GmbH";
     }
 
-    private String getSimulatedScanData() {
+    /**
+     * Retrieves the name of the origin of a country.
+     *
+     * @return A String representing the name of country name
+     *
+     */
+    private String countryOrigin() {
         // Generate simulated data
         // This is a placeholder, and you'd replace this with your simulation logic
-        return "Simulated scan data at " + new Date().toString();
+        return "Germany";
     }
 
-    private void updateRandomNumber() {
+    /**
+     * Generates a random barcode number and updates the channel state with this new value.
+     * The method creates a random number between 100,000 and 10,000,000, which simulates
+     * a unique barcode. It then calls {@code updateState} to update the channel state of
+     * the optical verifier scan result with this random barcode number.
+     *
+     * It directly interacts with the system's channel state, ensuring the optical
+     * verifier's scan result is updated with a new, randomly generated barcode.
+     */
+
+    private void updateRandom_BarCode() {
         // Generate a random number between 100,000 and 10,000,000
         int randomNumber = new Random().nextInt((10000000 - 100000) + 1) + 100000;
 
@@ -203,7 +264,7 @@ public class MyNewBindingHandler extends BaseThingHandler {
      * @return The device location.
      */
     private String getDeviceLocation() {
-        return "somewhere in the thm";
+        return "THM A12";
     }
 
     /**
@@ -244,17 +305,6 @@ public class MyNewBindingHandler extends BaseThingHandler {
     }
 
     /**
-     * Returns the optical verifier scan result.
-     * The optical verifier scan result should be retrieved from the device in a real implementation.
-     *
-     * @return The optical verifier scan result.
-     */
-    private int getOpticalVerifierScanResult() {
-        Random random = new Random();
-        return random.nextInt(100000, 1000000);
-    }
-
-    /**
      * Returns the device revision.
      * The device revision should be retrieved from the device in a real implementation.
      * In this case, it's the combination of the model id and the version number of the device.
@@ -262,13 +312,30 @@ public class MyNewBindingHandler extends BaseThingHandler {
      * @return The device revision.
      */
     private String getDeviceRevision() {
-        return getModelId() + getDeviceVersionNumber();
+        return "Q34E234";
     }
 
+    /**
+     * Retrieves the Device Version Number of the device.
+     *
+     * @return The Device Version Number of the device.
+     */
     private String getDeviceVersionNumber() {
         return "248IC";
     }
 
+    /**
+     * Cleans up resources before the object is destroyed. Specifically, this
+     * implementation ensures that any scheduled tasks are cancelled to prevent
+     * resource leaks or unwanted execution after the object is disposed of.
+     * If there is an active scheduled task associated with this handler, it is
+     * checked for its current state. If the task is not already cancelled, it
+     * is cancelled explicitly.
+     *
+     * This method should be called when the handler is no longer needed and is
+     * being disposed of. It calls the {@code dispose} method of the superclass
+     * to ensure proper resource management and cleanup across the hierarchy.
+     */
     @Override
     public void dispose() {
         // Ensure we cancel the scheduled task when the handler is disposed

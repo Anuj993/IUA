@@ -23,7 +23,7 @@
 			<channel id="DeviceStatus" typeId="deviceStatus"/>
 			<channel id="AutoIdModelVersion" typeId="autoIdModelVersion"/>
 			<channel id="DeviceManual" typeId="deviceManual"/>
-			<channel id="LastScanData" typeId="lastScanData"/>
+			<channel id="CountryOrigin" typeId="origin"/>
 			<channel id="OpticalVerifierScanResult" typeId="opticalVerifierScanResult"/>
 			<channel id="DeviceRevision" typeId="deviceRevision"/>
 		</channels>
@@ -53,6 +53,7 @@
 		<item-type>String</item-type>
 		<label>Device Information</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives the device Information</description>
+		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="manufacturer">
 		<item-type>String</item-type>
@@ -64,42 +65,48 @@
 		<item-type>String</item-type>
 		<label>model Name</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives model Name</description>
+		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="deviceLocation">
 		<item-type>String</item-type>
 		<label>Location</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives the current location</description>
+		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="deviceStatus">
 		<item-type>String</item-type>
 		<label>State</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives state of the Device</description>
-		<state readOnly="true"></state>
+		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="autoIdModelVersion">
 		<item-type>String</item-type>
 		<label>Model Version</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives the model Version</description>
+		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="deviceManual">
 		<item-type>String</item-type>
 		<label>Device Manual</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives Info - How to use the Device</description>
+		<state readOnly="true"/>
 	</channel-type>
-	<channel-type id="lastScanData">
+	<channel-type id="origin">
 		<item-type>String</item-type>
-		<label>Last Scanned Data</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
-		<description>Gives the Last scanned Data</description>
+		<label>Product Origin</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<description>Gives the country of origin</description>
 		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="opticalVerifierScanResult">
 		<item-type>Number</item-type>
-		<label>Scan Result</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
+		<label>Scanning the product</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Gives the scan Verifier Result</description>
+		<state readOnly="true"/>
 	</channel-type>
 	<channel-type id="deviceRevision">
 		<item-type>String</item-type>
 		<label>Revision</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
 		<description>Device Revision</description>
+		<state readOnly="true"/>
 	</channel-type>
 </thing:thing-descriptions>
